@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>todo</title>
+    <script src="./js/jquery-2.1.3.min.js"></script>
+</head>
+<body>
+    <h1>TODO</h1>
+    
+    <input type="text" id="title">
+    <button id="add">追加</button>
+    <button class="btn btn-danger ml-2" id="delete">全削除</button>
+    <div id="view"></div>
+
+<script>
+    const titles=[];
+//追加イベント(addボタンをクリックしたら配列に追加)
+$("#add").on("click",function(){
+//#viewに表示されているものはempty();削除
+$("#view").empty();    
+ //#titleのvalueを追加(push)
+ const t = $("#title").val();
+//配列にvalueを追加(push関数)
+titles.push(t);
+//#viewに表示する
+for(let i=0; i<titles.length; i++){
+    $("#view").prepend('<div class="delete" data-titles="'+i+'">'+titles[i]+'</div>');
+}
+});
+
+//削除イベント
+$("div").on("click",".delete",function () {
+    //#viewの中を空っぽにする
+    $("#view").empty();
+    //配列から１つ削除する
+    titles.splice($(this).attr("data-titles"),1);
+    //配列の数だけデータを表示する
+    //ローカルストレージからクリア
+    localStorage.clear();
+    for(let i =0; i <titles.length; i++){
+    $("#view").prepend('<div class="delete" data-titles="'+i+'">'+titles[i]+'</div>');
+    localStorage.setItem(localStorage.length.toString(),titles[i]);
+    }
+    
+    
+    $("#view").html("");
+    showList();
+})
+
+     // ローカルストレージに保存処理
+  $("#add").on("click", function(){
+    localStorage.setItem(localStorage.length.toString(), $("#title").val());
+    $("#title").val("");
+    showList();
+  });
+
+  showList();
+
+
+  function showList() {
+ 
+    $("#view").html("");
+  for (let i = 0; i < localStorage.length; i++) {
+    const key   = localStorage.key(i);       //key名
+    const value = localStorage.getItem(key); //value
+    const html = '<div class="delete" data-titles="'+i+'">'+value+'</div>';
+    $("#view").prepend(html);
+    console.log(value);
+}
+}
+
+
+function deleteItem(i) {
+localStorage.removeItem(i);
+showList();
+}
+
+
+
+    </script>
+</body>
+</html>
